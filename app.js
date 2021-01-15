@@ -1,6 +1,7 @@
 import Express, { json, response } from 'express';
 import cors from 'cors';
 import fs from 'fs';
+
 const app = Express();
 const port = 3001;
 
@@ -66,7 +67,7 @@ const queryColors = (query, listOfColors) => {
 };
 
 app.get('/colors/:color', (req, res) => {
-	res.json(getColor(req.params.color, cachedColors.colors));
+	res.json(getColorInfo(req.params.color, cachedColors.colors));
 });
 
 app.get('/colors', (req, res) => {
