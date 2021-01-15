@@ -7,8 +7,6 @@ const port = 3001;
 
 app.use(cors());
 
-let cachedColors;
-
 const getFile = (fileName) => {
 	return new Promise((resolve, reject) => {
 		fs.readFile(fileName, 'utf8', (err, data) => {
@@ -20,32 +18,19 @@ const getFile = (fileName) => {
 		});
 	});
 };
+const cachedColors = await getFile('./colorSample.json');
 
-getFile('./colorSample.json')
-	.then((data) => {
-		const colors = JSON.parse(data);
-		cachedColors = colors;
-	})
-	.catch((err) => res.send(err));
+// .then((data) => {
+// 	const colors = JSON.parse(data);
+// 	cachedColors = colors;
+// })
+// .catch((err) => res.send(err));
 
 const getColor = (color, listOfColors) => {
 	const result = listOfColors.filter((item) => {
 		return item.color === color;
 	});
 	return result;
-};
-
-const getColorInfo = (query, listOfColors) => {
-	const searchResults = [];
-	for (let color of listOfColors) {
-		for (let key in query) {
-			if (query[key] === color[key]) {
-				searchResults.push(color);
-			}
-		}
-	}
-	console.log(searchResults);
-	return searchResults;
 };
 
 const queryColors = (query, listOfColors) => {
@@ -58,7 +43,7 @@ const queryColors = (query, listOfColors) => {
 				check = false;
 			}
 		}
-		if (check === true) {
+		if (!!check) {
 			return color;
 		}
 	});
@@ -67,7 +52,7 @@ const queryColors = (query, listOfColors) => {
 };
 
 app.get('/colors/:color', (req, res) => {
-	res.json(getColorInfo(req.params.color, cachedColors.colors));
+	res.json(getColor(req.params.color, cachedColors.colors));
 });
 
 app.get('/colors', (req, res) => {
